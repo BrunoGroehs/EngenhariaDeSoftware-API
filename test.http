@@ -1,0 +1,91 @@
+### Usuários - Criar (Execute este primeiro para criar um usuário)
+
+POST http://localhost:3000/users
+Content-Type: application/json
+
+{
+"name": "Fulano",
+"email": "user@example.com",
+"password": "password123"
+}
+
+{% client.global.set("userId", response.body.id) %}
+
+### Autenticação - Login
+
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+"email": "user@example.com",
+"password": "password123"
+}
+
+{% client.global.set("authToken", response.json().token) %}
+
+### Usuários - Obter
+
+GET http://localhost:3000/users/{{userId}}
+Authorization: Bearer {{authToken}}
+
+### Usuários - Atualizar
+
+PUT http://localhost:3000/users/{{userId}}
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+"name": "Fulano Atualizado",
+"email": "fulano_atualizado@example.com"
+}
+
+### Usuários - Remover (soft delete)
+
+DELETE http://localhost:3000/users/{{userId}}
+Authorization: Bearer {{authToken}}
+
+### Tarefas - Criar
+
+POST http://localhost:3000/tasks
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+"title": "Nova Tarefa",
+"description": "Descrição da tarefa",
+"assignedTo": {{userId}}
+}
+
+{% client.global.setVariable('taskId', response.body.id) %}
+
+### Tarefas - Obter
+
+GET http://localhost:3000/tasks/{{taskId}}
+Authorization: Bearer {{authToken}}
+
+### Tarefas - Listar por usuário
+
+GET http://localhost:3000/tasks?assignedTo={{userId}}
+Authorization: Bearer {{authToken}}
+
+### Tarefas - Atualizar
+
+PUT http://localhost:3000/tasks/{{taskId}}
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+"title": "Tarefa Atualizada",
+"description": "Descrição atualizada",
+"status": "concluida"
+}
+
+### Tarefas - Remover
+
+DELETE http://localhost:3000/tasks/{{taskId}}
+Authorization: Bearer {{authToken}}
+
+### Autenticação - Logout
+
+POST http://localhost:3000/auth/logout
+Authorization: Bearer {{authToken}}
