@@ -131,10 +131,131 @@ Veja o arquivo `test.http` para exemplos práticos de requisições HTTP para to
 
 ---
 
-## Observações
-- O projeto é totalmente testável sem banco real.
-- Para produção, configure corretamente o `.env` e o banco PostgreSQL.
-- Siga as mensagens de erro retornadas pela API para facilitar o debug.
+# Documentação do Projeto
+
+## 1. Visão Geral
+
+Esta API tem como objetivo gerenciar usuários e tarefas, fornecendo autenticação JWT, escrita em Node.js com Express e PostgreSQL. O sistema é voltado para controle de atividades, atribuição de tarefas e gestão de usuários, podendo ser utilizado em ambientes acadêmicos ou corporativos.
+
+## 2. Decisões Arquiteturais
+
+- **Arquitetura em camadas**: Separação clara entre controllers, models, middlewares e rotas, facilitando manutenção e testes.
+- **Padrão MVC**: Controllers tratam lógica de negócio, models acessam dados, rotas expõem endpoints.
+- **Mock de banco para testes**: Durante testes, o banco é simulado, permitindo execução sem dependências externas.
+- **Autenticação JWT**: Segurança nas rotas protegidas.
+- **Middlewares reutilizáveis**: Logger, autenticação e tratamento global de erros.
+
+## 3. Modelagem de Dados
+
+### Diagrama (lógico)
+
+```
+USERS
+- id (PK)
+- name
+- email (único)
+- password_hash
+- created_at
+- deleted_at
+
+TASKS
+- id (PK)
+- title
+- description
+- status
+- assigned_to (FK -> USERS.id)
+- created_at
+- updated_at
+- deleted_at
+```
+
+### Descrição das Tabelas
+- **users**: Armazena dados dos usuários, incluindo nome, email, hash da senha, datas de criação e deleção lógica.
+- **tasks**: Armazena tarefas, com título, descrição, status, usuário responsável (assigned_to), datas de criação, atualização e deleção lógica.
+
+## 4. Fluxo de Requisições
+
+### Principais Endpoints
+
+#### Usuários
+- `POST /users` — Cria um novo usuário
+- `GET /users/:id` — Busca usuário por ID (autenticado)
+- `PUT /users/:id` — Atualiza usuário (autenticado)
+- `DELETE /users/:id` — Remove usuário (soft delete, autenticado)
+
+#### Autenticação
+- `POST /auth/login` — Login (retorna JWT)
+- `POST /auth/logout` — Logout
+
+#### Tarefas
+- `POST /tasks` — Cria nova tarefa (autenticado)
+- `GET /tasks/:id` — Busca tarefa por ID (autenticado)
+- `GET /tasks?assignedTo=ID` — Lista tarefas de um usuário (autenticado)
+- `PUT /tasks/:id` — Atualiza tarefa (autenticado)
+- `DELETE /tasks/:id` — Remove tarefa (autenticado)
+
+#### Exemplos de Uso
+Veja o arquivo `test.http` para exemplos práticos de requisições HTTP para todos os endpoints da API.
+
+## 5. Configuração e Deploy
+
+### Dependências
+- Node.js >= 18
+- PostgreSQL (apenas produção)
+- npm
+
+### Instalação
+```bash
+# Clone o repositório
+git clone <repo-url>
+cd EngenhariaDeSoftware-API
+npm install
+```
+
+### Configuração do Ambiente
+Crie um arquivo `.env` na raiz do projeto:
+```
+PORT=3000
+JWT_SECRET=sua-chave-secreta
+DATABASE_URL=postgres://usuario:senha@localhost:5432/seubanco
+```
+> Para rodar os testes, as variáveis de banco não são necessárias (o mock é usado automaticamente).
+
+### Execução
+```bash
+# Produção
+npm start
+# Desenvolvimento
+npm run dev
+```
+A API estará disponível em `http://localhost:3000`.
+
+## 6. Testes Automatizados
+
+- **Mocha** + **Chai**: Testes unitários e de integração
+- **Supertest**: Testes de endpoints HTTP
+- **Sinon**: Mocks e stubs
+- **nyc**: Cobertura de código
+- **Mock de banco**: Nenhum dado real é afetado nos testes
+
+### Estratégia
+- Testes unitários para controllers, models e middlewares
+- Testes de integração para fluxos completos de usuário, tarefa e autenticação
+- Cobertura mínima exigida: 80% linhas/statements/funções, 70% branches
+- Mocks para banco, JWT e bcrypt garantem testes rápidos e isolados
+
+### Execução dos Testes
+```bash
+npm test                # Todos os testes
+npm run test:watch      # Modo watch
+npm run test:coverage   # Cobertura de código
+npm run coverage:report # Relatório HTML em coverage/index.html
+```
+
+### Métricas de Cobertura
+- Linhas: >= 80%
+- Funções: >= 80%
+- Branches: >= 70%
 
 ---
 
