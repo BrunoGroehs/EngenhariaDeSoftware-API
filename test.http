@@ -1,5 +1,4 @@
 ### Usuários - Criar (Execute este primeiro para criar um usuário)
-
 POST http://localhost:3000/users
 Content-Type: application/json
 
@@ -8,11 +7,8 @@ Content-Type: application/json
 "email": "user@example.com",
 "password": "password123"
 }
-
-{% client.global.set("userId", response.body.id) %}
-
 ### Autenticação - Login
-
+# @name getJWTToken
 POST http://localhost:3000/auth/login
 Content-Type: application/json
 
@@ -21,16 +17,17 @@ Content-Type: application/json
 "password": "password123"
 }
 
-{% client.global.set("authToken", response.json().token) %}
+### 
+@authToken = {{getJWTToken.response.body.token}}
 
 ### Usuários - Obter
 
-GET http://localhost:3000/users/{{userId}}
+GET http://localhost:3000/users/2
 Authorization: Bearer {{authToken}}
 
 ### Usuários - Atualizar
 
-PUT http://localhost:3000/users/{{userId}}
+PUT http://localhost:3000/users/1
 Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
@@ -41,7 +38,7 @@ Content-Type: application/json
 
 ### Usuários - Remover (soft delete)
 
-DELETE http://localhost:3000/users/{{userId}}
+DELETE http://localhost:3000/users/1
 Authorization: Bearer {{authToken}}
 
 ### Tarefas - Criar
@@ -53,24 +50,20 @@ Content-Type: application/json
 {
 "title": "Nova Tarefa",
 "description": "Descrição da tarefa",
-"assignedTo": {{userId}}
+"assignedTo": 2
 }
-
-{% client.global.setVariable('taskId', response.body.id) %}
-
 ### Tarefas - Obter
-
-GET http://localhost:3000/tasks/{{taskId}}
+GET http://localhost:3000/tasks/1
 Authorization: Bearer {{authToken}}
 
 ### Tarefas - Listar por usuário
 
-GET http://localhost:3000/tasks?assignedTo={{userId}}
+GET http://localhost:3000/tasks?assignedTo=2
 Authorization: Bearer {{authToken}}
 
 ### Tarefas - Atualizar
 
-PUT http://localhost:3000/tasks/{{taskId}}
+PUT http://localhost:3000/tasks/1
 Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
@@ -83,6 +76,11 @@ Content-Type: application/json
 ### Tarefas - Remover
 
 DELETE http://localhost:3000/tasks/{{taskId}}
+Authorization: Bearer {{authToken}}
+
+### Tarefas - Remover Todos
+
+DELETE http://localhost:3000/tasks
 Authorization: Bearer {{authToken}}
 
 ### Autenticação - Logout
