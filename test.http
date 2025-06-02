@@ -1,4 +1,5 @@
-### Usuários - Criar (Execute este primeiro para criar um usuário)
+# @name createUser
+### Usuários - Criar
 POST http://localhost:3000/users
 Content-Type: application/json
 
@@ -7,6 +8,20 @@ Content-Type: application/json
 "email": "user@example.com",
 "password": "password123"
 }
+
+###
+@userID = 14
+
+### Usuários - Criar
+POST http://localhost:3000/users
+Content-Type: application/json
+
+{
+"name": "Rogerio",
+"email": "rogerinho2012@example.com",
+"password": "batatinha123"
+}
+
 ### Autenticação - Login
 # @name getJWTToken
 POST http://localhost:3000/auth/login
@@ -21,13 +36,11 @@ Content-Type: application/json
 @authToken = {{getJWTToken.response.body.token}}
 
 ### Usuários - Obter
-
-GET http://localhost:3000/users/2
+GET http://localhost:3000/users/{{userID}}
 Authorization: Bearer {{authToken}}
 
 ### Usuários - Atualizar
-
-PUT http://localhost:3000/users/1
+PUT http://localhost:3000/users/{{userID}}
 Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
@@ -37,12 +50,10 @@ Content-Type: application/json
 }
 
 ### Usuários - Remover (soft delete)
-
-DELETE http://localhost:3000/users/1
+DELETE http://localhost:3000/users/{{userID}}
 Authorization: Bearer {{authToken}}
 
 ### Tarefas - Criar
-
 POST http://localhost:3000/tasks
 Authorization: Bearer {{authToken}}
 Content-Type: application/json
@@ -50,20 +61,20 @@ Content-Type: application/json
 {
 "title": "Nova Tarefa",
 "description": "Descrição da tarefa",
-"assignedTo": 2
+"assignedTo": {{userID}}
 }
+
+@taskID = 2
 ### Tarefas - Obter
-GET http://localhost:3000/tasks/1
+GET http://localhost:3000/tasks/{{taskID}}
 Authorization: Bearer {{authToken}}
 
 ### Tarefas - Listar por usuário
-
-GET http://localhost:3000/tasks?assignedTo=2
+GET http://localhost:3000/tasks?assignedTo={{userID}}
 Authorization: Bearer {{authToken}}
 
 ### Tarefas - Atualizar
-
-PUT http://localhost:3000/tasks/1
+PUT http://localhost:3000/tasks/{{taskID}}
 Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
@@ -74,16 +85,13 @@ Content-Type: application/json
 }
 
 ### Tarefas - Remover
-
-DELETE http://localhost:3000/tasks/{{taskId}}
+DELETE http://localhost:3000/tasks/{{taskID}}
 Authorization: Bearer {{authToken}}
 
-### Tarefas - Remover Todos
-
-DELETE http://localhost:3000/tasks
+### user - Remover Todos
+DELETE http://localhost:3000/user/
 Authorization: Bearer {{authToken}}
 
 ### Autenticação - Logout
-
 POST http://localhost:3000/auth/logout
 Authorization: Bearer {{authToken}}
