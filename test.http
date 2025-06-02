@@ -10,7 +10,7 @@ Content-Type: application/json
 }
 
 ###
-@userID = 14
+@userID = 78
 
 ### Usuários - Criar
 POST http://localhost:3000/users
@@ -49,10 +49,6 @@ Content-Type: application/json
 "email": "fulano_atualizado@example.com"
 }
 
-### Usuários - Remover (soft delete)
-DELETE http://localhost:3000/users/{{userID}}
-Authorization: Bearer {{authToken}}
-
 ### Tarefas - Criar
 POST http://localhost:3000/tasks
 Authorization: Bearer {{authToken}}
@@ -61,10 +57,11 @@ Content-Type: application/json
 {
 "title": "Nova Tarefa",
 "description": "Descrição da tarefa",
-"assignedTo": {{userID}}
+"assignedTo": 78
 }
 
-@taskID = 2
+###
+@taskID = 11
 ### Tarefas - Obter
 GET http://localhost:3000/tasks/{{taskID}}
 Authorization: Bearer {{authToken}}
@@ -94,4 +91,8 @@ Authorization: Bearer {{authToken}}
 
 ### Autenticação - Logout
 POST http://localhost:3000/auth/logout
+Authorization: Bearer {{authToken}}
+
+### Usuários - Remover (soft delete)
+DELETE http://localhost:3000/users/{{userID}}
 Authorization: Bearer {{authToken}}
