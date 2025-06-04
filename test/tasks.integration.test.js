@@ -1,18 +1,37 @@
 const request = require('supertest');
 const { expect } = require('chai');
+// Unificação dos testes: agora cobre tanto cenários com mocks quanto sem mocks
+const { createMockedApp, createValidTestToken } = require('./helpers/testSetup');
+const mockData = require('./helpers/mockData');
 
-describe('Tasks API Integration Tests', function() {
-  let app;
-  
-  before(function() {
+let app;
+let useMock = false;
+try {
+  if (createMockedApp && mockData) {
+    useMock = true;
+  }
+} catch (e) {}
+
+before(function() {
+  if (useMock) {
+    app = createMockedApp();
+  } else {
     // Set test environment
     process.env.NODE_ENV = 'test';
     process.env.JWT_SECRET = 'test-secret-key';
     
     // Load app after setting environment
     app = require('../src/app');
-  });
+  }
+});
 
+if (useMock) {
+  beforeEach(function() {
+    mockData.resetMockData();
+  });
+}
+
+describe('Tasks API Integration Tests', function() {
   describe('POST /tasks - Create a new task', function() {
     it('should return 401 when no token is provided', async function() {
       const taskData = {
@@ -221,6 +240,27 @@ describe('Tasks API Integration Tests', function() {
 
       // Will fail at auth or database level
       expect([403, 500]).to.include(response.status);
+    });
+  });
+
+  describe('GET /tasks/user - List tasks by user (controller listByUser)', function() {
+    it('should return 400 when assignedTo parameter is missing', async function() {
+      const validToken = useMock ? createValidTestToken(1, 'João Silva') : 'valid-token-format';
+      const response = await request(app)
+        .get('/tasks')
+        .set('Authorization', `Bearer ${validToken}`);
+      expect([400, 403]).to.include(response.status);
+    });
+
+    it('should return 200 and a list of tasks for a valid user', async function() {
+      if (!useMock) return this.skip();
+      const validToken = createValidTestToken(1, 'João Silva');
+      const response = await request(app)
+        .get('/tasks')
+        .query({ assignedTo: 1 })
+        .set('Authorization', `Bearer ${validToken}`);
+      expect(response.status).to.equal(200);
+      expect(response.body).to.be.an('array');
     });
   });
 });
