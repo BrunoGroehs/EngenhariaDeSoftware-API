@@ -260,3 +260,5 @@ npm run coverage:report # Relatório HTML em coverage/index.html
 ---
 
 **Engenharia de Software API — 2025**
+
+https://docs.google.com/presentation/d/11fGjMViIQsuTpgADXhTs-f0Xb_GRlkA0iwQXfBDtGZ0/edit?usp=sharing
