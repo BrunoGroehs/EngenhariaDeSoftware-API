@@ -10,17 +10,7 @@ Content-Type: application/json
 }
 
 ###
-@userID = 78
-
-### Usuários - Criar
-POST http://localhost:3000/users
-Content-Type: application/json
-
-{
-"name": "Rogerio",
-"email": "rogerinho2012@example.com",
-"password": "batatinha123"
-}
+@userID = 87
 
 ### Autenticação - Login
 # @name getJWTToken
