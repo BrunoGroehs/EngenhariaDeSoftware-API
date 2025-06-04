@@ -15,17 +15,3 @@ process.env.DB_PASSWORD = 'test_password';
 
 // Global sinon sandbox for easier cleanup
 global.sinon = sinon;
-
-// Set up hooks for test cleanup
-beforeEach(function() {
-  // Create a new sandbox for each test
-  this.sandbox = sinon.createSandbox();
-});
-
-afterEach(function() {
-  // Restore all stubs after each test
-  if (this.sandbox) {
-    this.sandbox.restore();
-  }
-  sinon.restore();
-});
